@@ -18,15 +18,20 @@ jobs:
           sudo rm -rf /opt/ghc
           df -h
 
-      - name: Set up Build Environment & Install OpenJDK 8
+      - name: Set up Build Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y openjdk-8-jdk
-          # KitKat compatibility packages
-          sudo apt-get install -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip python2.7
+          sudo apt-get install -y software-properties-common
+          
+          # Add deadsnakes PPA for Python 2.7
+          sudo add-apt-repository -y ppa:deadsnakes/ppa
+          sudo apt-get update
 
-          # Python 2 setup for legacy repo tool & Android 4.4
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 || true
+          # Install OpenJDK 8 and modern build tools
+          sudo apt-get install -y openjdk-8-jdk git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 libncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip python2.7 python2.7-dev || sudo apt-get install -y openjdk-8-jdk git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 libncurses-dev x11proto-core-dev libx11-dev lib32z1-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip python2
+
+          # Set default python to python2
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 || sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1 || true
 
       - name: Install Repo Tool
         run: |
