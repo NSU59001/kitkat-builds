@@ -24,6 +24,16 @@ jobs:
           distribution: 'zulu'
           java-version: '6'
 
+      - name: Install GNU Make 3.81 (Legacy Compatibility)
+        run: |
+          mkdir -p ~/tools_build && cd ~/tools_build
+          curl -s https://ftp.gnu.org/gnu/make/make-3.81.tar.gz | tar -xz
+          cd make-3.81
+          ./configure --prefix=$HOME/make381
+          make
+          make install
+          echo "$HOME/make381/bin" >> $GITHUB_PATH
+
       - name: Set up Build Dependencies
         run: |
           sudo apt-get update
